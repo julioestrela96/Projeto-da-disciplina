@@ -1,0 +1,49 @@
+foodadviserApi:
+  image:
+    repository: "foodadvisor-api"
+    tag: "1.0.0"
+  replicaCount: 1  # Corrigido de resplicaCount para replicaCount
+  pullPolicy: IfNotPresent
+  resources: {}
+
+foodadvisorClient:
+  image:
+    repository: "foodadvisor-client"
+    tag: "1.0.0"
+  replicaCount: 1  # Corrigido de resplicaCount para replicaCount
+  pullPolicy: IfNotPresent
+  resources: {}
+
+serviceBackend:
+  type: ClusterIP
+  port: 1337
+  targetPort: 1337
+
+serviceFrontend:
+  type: ClusterIP
+  port: 3000
+  targetPort: 3000
+
+IngressFrontend:
+  annotations:
+  # nginx.ingress.kubernetes.io/rewrite-target: /
+  host: foodadvisor.client.com
+
+IngressBackend:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  host: foodadvisor.api.com
+  
+  extraEnvs:
+  - name: DATABASE_CLIENT
+    value: postgres
+  - name: DATABASE_HOST
+    value: strapi-foodadvisor-postgresql
+  - name: DATABASE_PORT
+    value: 5432
+  - name: DATABASE_USERNAME
+    value: strapi
+  - name: DATABASE_PASSWORD
+    value: strapi
+  - name: DATABASE_NAME
+    value: strapi
